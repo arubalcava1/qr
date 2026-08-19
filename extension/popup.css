@@ -1,0 +1,474 @@
+/* ---------- tokens ---------- */
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI", "Inter", system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", "JetBrains Mono", Consolas, monospace;
+
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 14px;
+  --text-lg: 20px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --duration: 180ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* light palette (default) — "signal card": cool paper + ink-teal.
+     gold (--seal) is reserved for the success stamp only, never used
+     as a general UI accent, so it stays a genuine signature moment. */
+  --bg: #EFF2F1;
+  --card: #FFFFFF;
+  --card-inset: #E6EAE8;
+  --fg: #14333A;
+  --muted: #60767A;
+  --border: #D6DDDB;
+  --accent: #14424B;
+  --accent-hover: #0F343B;
+  --on-accent: #F2F5F4;
+  --seal: #B8862E;
+  --on-seal: #2A1C05;
+  --danger: #B0392D;
+  --ring: #14424B;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0D1C1F;
+    --card: #15282B;
+    --card-inset: #1C3235;
+    --fg: #ECEEE6;
+    --muted: #8CA0A3;
+    --border: #2A4044;
+    --accent: #2A5F63;
+    --accent-hover: #366F73;
+    --on-accent: #ECEEE6;
+    --seal: #D3A24E;
+    --on-seal: #241703;
+    --danger: #E08677;
+    --ring: #4A8B8F;
+  }
+}
+
+/* ---------- base ---------- */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 360px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+body { max-height: 560px; overflow-y: auto; }
+
+p { margin: 0; }
+
+button {
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+input {
+  font-family: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.app {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ---------- header ---------- */
+.app__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.brand__mark { flex-shrink: 0; }
+
+.brand__title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.icon-btn {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+}
+
+.icon-btn:hover { background: var(--card-inset); color: var(--fg); }
+.icon-btn[aria-expanded="true"] { background: var(--card-inset); color: var(--accent); }
+
+.icon-btn__badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+}
+
+/* ---------- history panel ---------- */
+.history {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-height: 168px;
+  overflow-y: auto;
+}
+
+.history__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  text-align: left;
+  width: 100%;
+  transition: background var(--duration) var(--ease);
+}
+
+.history__row:hover { background: var(--card-inset); }
+
+.history__row-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.history__ssid {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history__time {
+  font-size: var(--text-2xs);
+  color: var(--muted);
+}
+
+.history__remove {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity var(--duration) var(--ease), background var(--duration) var(--ease), color var(--duration) var(--ease);
+}
+
+.history__row:hover .history__remove,
+.history__remove:focus-visible { opacity: 1; }
+
+.history__remove:hover { background: var(--card-inset); color: var(--danger); }
+
+.history__empty {
+  padding: var(--space-2);
+  text-align: center;
+}
+
+.history__empty p:first-child {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.history__note {
+  margin-top: 2px;
+  font-size: var(--text-2xs);
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+.text-btn {
+  align-self: center;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  color: var(--muted);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: color var(--duration) var(--ease);
+}
+
+.text-btn--danger:hover { color: var(--danger); }
+
+/* ---------- form ---------- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.field__label {
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.field__input-wrap { position: relative; display: flex; }
+
+.field__input {
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--space-3);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+}
+
+.field__input::placeholder {
+  font-family: var(--font-sans);
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+.field__input:hover { border-color: var(--muted); }
+
+.field__input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.field--invalid .field__input {
+  border-color: var(--danger);
+}
+
+.field--invalid .field__input:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 18%, transparent);
+}
+
+.field__input-wrap .field__input { padding-right: 40px; }
+
+.field__reveal {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
+}
+
+.field__reveal:hover { color: var(--fg); background: var(--card-inset); }
+
+.field__error {
+  font-size: var(--text-2xs);
+  color: var(--danger);
+  min-height: 14px;
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  height: 36px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  transition: background var(--duration) var(--ease), transform var(--duration) var(--ease), opacity var(--duration) var(--ease);
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn--primary {
+  width: 100%;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn--primary:hover { background: var(--accent-hover); }
+
+.btn--primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+.btn--ghost {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--fg);
+}
+
+.btn--ghost:hover { background: var(--card-inset); border-color: var(--muted); }
+
+/* ---------- result ---------- */
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.result__tile {
+  height: 232px;
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result__tile[data-state="success"] {
+  border-style: solid;
+}
+
+.result__state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-align: center;
+  padding: var(--space-4);
+  animation: rise var(--duration) var(--ease);
+}
+
+.result__tile[data-state="empty"] [data-for="empty"],
+.result__tile[data-state="error"] [data-for="error"],
+.result__tile[data-state="success"] [data-for="success"] {
+  display: flex;
+}
+
+.result__imgwrap {
+  position: relative;
+  padding: var(--space-3);
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+}
+
+.result__imgwrap img {
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* the signature moment: a rubber-stamp seal marking the code as ready,
+   in the one color reserved exclusively for this success state */
+.result__stamp {
+  position: absolute;
+  top: -13px;
+  right: -13px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--seal);
+  background: var(--card);
+  color: var(--seal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-12deg);
+  animation: stamp 420ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  animation-delay: 90ms;
+}
+
+@keyframes stamp {
+  from { opacity: 0; transform: rotate(-32deg) scale(0.55); }
+  to { opacity: 1; transform: rotate(-12deg) scale(1); }
+}
+
+.result__caption {
+  font-size: var(--text-2xs);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.result__actions {
+  display: flex;
+  gap: var(--space-2);
+  animation: rise var(--duration) var(--ease);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

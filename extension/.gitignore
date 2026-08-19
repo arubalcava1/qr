@@ -1,0 +1,17 @@
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python (make_icons.py)
+__pycache__/
+*.pyc
+
+# Build output — regenerate with Compress-Archive, don't version the zip
+*.zip
+
+# Editor
+.vscode/
+
+# Local dev preview harness (recreated ad hoc, never shipped)
+_preview.html

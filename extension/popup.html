@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>WiFi QR</title>
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="app">
+
+    <header class="app__header">
+      <div class="brand">
+        <svg class="brand__mark" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="1" y="1" width="22" height="22" rx="5" fill="var(--accent)"/>
+          <rect x="4" y="4" width="6" height="6" rx="1.3" fill="var(--on-accent)"/>
+          <rect x="14" y="4" width="6" height="6" rx="1.3" fill="var(--on-accent)"/>
+          <rect x="4" y="14" width="6" height="6" rx="1.3" fill="var(--on-accent)"/>
+          <rect x="15" y="15" width="4" height="4" rx="1" fill="var(--on-accent)"/>
+        </svg>
+        <h1 class="brand__title">WiFi QR</h1>
+      </div>
+
+      <button class="icon-btn" id="historyToggle" type="button" aria-expanded="false" aria-controls="historyPanel" aria-label="Recent networks">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M12 8v4.3l3 1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="icon-btn__badge" id="historyCount" hidden>0</span>
+      </button>
+    </header>
+
+    <section class="history" id="historyPanel" hidden>
+      <div class="history__list" id="historyList"></div>
+      <div class="history__empty" id="historyEmpty">
+        <p>No recent networks yet.</p>
+        <p class="history__note">Saved names &amp; passwords stay on this device only.</p>
+      </div>
+      <button class="text-btn text-btn--danger" id="historyClear" type="button" hidden>Clear all</button>
+    </section>
+
+    <form class="form" id="qrForm" novalidate>
+      <div class="field">
+        <label class="field__label" for="ssid">Network name</label>
+        <input class="field__input" id="ssid" name="ssid" type="text" placeholder="e.g. Homebase 5G" maxlength="32" autocomplete="off" spellcheck="false" />
+        <p class="field__error" id="ssidError" hidden></p>
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="password">Password</label>
+        <div class="field__input-wrap">
+          <input class="field__input" id="password" name="password" type="password" placeholder="Network password" maxlength="63" autocomplete="off" spellcheck="false" />
+          <button class="field__reveal" id="revealToggle" type="button" aria-pressed="false" aria-label="Show password">
+            <svg class="icon-eye" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+            <svg class="icon-eye-off" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" hidden>
+              <path d="M3 3l18 18M10.6 10.7a3 3 0 0 0 4.2 4.2M6.6 6.7C4.2 8.3 2 12 2 12s3.6 7 10 7c1.8 0 3.4-.5 4.7-1.3M9.9 4.2A9.6 9.6 0 0 1 12 4c6.4 0 10 7 10 7-.6 1.1-1.5 2.4-2.7 3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <p class="field__error" id="passwordError" hidden></p>
+      </div>
+
+      <button class="btn btn--primary" id="generateBtn" type="submit">Generate QR</button>
+    </form>
+
+    <section class="result" id="result" aria-live="polite">
+      <div class="result__tile" id="resultTile" data-state="empty">
+
+        <div class="result__state" data-for="empty">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1.2" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.2" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M15 15h2.5M15 18.5h6M20.5 15v6M15 21.5h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <p>Your QR will appear here</p>
+        </div>
+
+        <div class="result__state" data-for="error">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="var(--danger)" stroke-width="1.6"/>
+            <path d="M12 8v5" stroke="var(--danger)" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="12" cy="15.5" r="1" fill="var(--danger)"/>
+          </svg>
+          <p id="resultErrorText">Something went wrong.</p>
+        </div>
+
+        <div class="result__state" data-for="success">
+          <div class="result__imgwrap">
+            <img id="qrImage" alt="" width="184" height="184" />
+            <span class="result__stamp" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </div>
+          <p class="result__caption" id="successCaption">Ready to scan</p>
+        </div>
+
+      </div>
+
+      <div class="result__actions" id="resultActions" hidden>
+        <button class="btn btn--ghost" id="copyBtn" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+          <span id="copyBtnLabel">Copy</span>
+        </button>
+        <button class="btn btn--ghost" id="downloadBtn" type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3v12m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <span>Download</span>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="lib/qrcode.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
