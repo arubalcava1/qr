@@ -1,6 +1,7 @@
 # WiFi QR
-Download this extension: https://chromewebstore.google.com/detail/wifi-qr/pjmnibhcagmfogffflbjbnepiibfphbh?authuser=0&hl=en
 A Chrome extension that turns a WiFi network name and password into a scannable QR code — so you can hand someone your WiFi without reading a password out loud or typing it into their phone.
+
+Download this extension: https://chromewebstore.google.com/detail/wifi-qr/pjmnibhcagmfogffflbjbnepiibfphbh?authuser=0&hl=en
 
 ![WiFi QR popup](docs/screenshot.png)
 
